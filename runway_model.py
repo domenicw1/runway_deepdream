@@ -90,7 +90,7 @@ def generate(model,inputs):
         octave_scale=args.octave_scale,
         num_octaves=args.num_octaves,
     )
-    return dreamed_image[0].permute(1, 2, 0).numpy().astype(np.uint8)
+    return dreamed_image
 
 if __name__ == '__main__':
     runway.run(port=5232)
