@@ -20,20 +20,20 @@ def dream(image, model, iterations, lr):
     image = Variable(Tensor(image).to(device), requires_grad=True)
     for i in range(iterations):
         model.zero_grad()
-        out = model(image)
+        out = model(image).to(device)
         loss = out.norm()
         loss.backward()
-        avg_grad = np.abs(image.grad.data.cpu().numpy()).mean()
+        avg_grad = np.abs(image.grad.data.to(device).numpy()).mean()
         norm_lr = lr / avg_grad
         image.data += norm_lr * image.grad.data
         image.data = clip(image.data)
         image.grad.data.zero_()
-    return image.cpu().data.numpy()
+    return image.to(device).data.numpy()
 
 
 def deep_dream(image, model, iterations, lr, octave_scale, num_octaves):
     """ Main deep dream method """
-    image = preprocess(image).unsqueeze(0).cpu().data.numpy()
+    image = preprocess(image).unsqueeze(0).to(device).data.numpy()
 
     # Extract image representations for each octave
     octaves = [image]
