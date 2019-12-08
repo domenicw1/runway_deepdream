@@ -82,7 +82,7 @@ def setup(opts):
 @runway.command('generate',
                inputs={ 'image': runway.image },
                outputs={ 'image': runway.image })
-def generate(model,inputs)
+def generate(model,inputs):
     image = inputs['image']
     dreamed_image = deep_dream(
         image,
