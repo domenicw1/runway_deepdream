@@ -15,7 +15,7 @@ from utils import deprocess, preprocess, clip
 
 def dream(image, model, iterations, lr):
     """ Updates the image to maximize outputs for n iterations """
-    Tensor = torch.cuda.FloatTensor if torch.cuda.is_available else torch.FloatTensor
+    Tensor = torch.FloatTensor
     image = Variable(Tensor(image), requires_grad=True)
     for i in range(iterations):
         model.zero_grad()
