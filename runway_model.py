@@ -13,19 +13,17 @@ import scipy.ndimage as nd
 from utils import deprocess, preprocess, clip
 device = torch.device("cpu")
 def dream(image, model, iterations, lr):
-    print('HEY AAAAAAAA')
+    
     """ Updates the image to maximize outputs for n iterations """
     Tensor = torch.FloatTensor
-    print('HEY AAAAAAAA')
     model = model.to(device)
     image = Variable(Tensor(image).to(device), requires_grad=True)
-    print('HEY AAAAAAAA')
     for i in range(iterations):
         model.zero_grad()
         out = model(image).to(device)
         loss = out.norm()
         loss.backward()
-        avg_grad = np.abs(image.grad.data.to(device).numpy()).mean()
+        avg_grad = np.abs(image.grad.data.numpy()).mean()
         norm_lr = lr / avg_grad
         image.data += norm_lr * image.grad.data
         image.data = clip(image.data)
@@ -35,14 +33,11 @@ def dream(image, model, iterations, lr):
 
 def deep_dream(image, model, iterations, lr, octave_scale, num_octaves):
     """ Main deep dream method """
-    print('HEY AAAAAAAA')
     image = preprocess(image).unsqueeze(0).to(device).data.numpy()
-    print('HEY AAAAAAAA')
     # Extract image representations for each octave
     octaves = [image]
     for _ in range(num_octaves - 1):
         octaves.append(nd.zoom(octaves[-1], (1, 1, 1 / octave_scale, 1 / octave_scale), order=1))
-    print('HEY AAAAAAAA')
     detail = np.zeros_like(octaves[-1])
     for octave, octave_base in enumerate(tqdm.tqdm(octaves[::-1], desc="Dreaming")):
         if octave > 0:
@@ -54,12 +49,10 @@ def deep_dream(image, model, iterations, lr, octave_scale, num_octaves):
         dreamed_image = dream(input_image, model, iterations, lr)
         # Extract deep dream details
         detail = dreamed_image - octave_base
-    print('HEY AAAAAAAA')
     return deprocess(dreamed_image)
 
 
 if __name__ == "__main__":
-    print('HEY AAAAAAAA')
     parser = argparse.ArgumentParser()
     parser.add_argument("--iterations", default=20, help="number of gradient ascent steps per octave")
     parser.add_argument("--at_layer", default=27, type=int, help="layer at which we modify image to maximize outputs")
@@ -86,8 +79,6 @@ def setup(opts):
                inputs={ 'image': runway.image },
                outputs={ 'image': runway.image })
 def generate(model,inputs):
-    print('HEY AAAAAAAA')
-    print('HEY AAAAAAAA')
     image = inputs['image']
     dreamed_image = deep_dream(
         image,
@@ -97,7 +88,7 @@ def generate(model,inputs):
         octave_scale=args.octave_scale,
         num_octaves=args.num_octaves,
     )
-    return dreamed_image
+    return dreamed_image[0].permute(1, 2, 0).numpy().astype(np.uint8)
 
 if __name__ == '__main__':
     runway.run(port=5232)
