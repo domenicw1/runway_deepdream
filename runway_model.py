@@ -89,7 +89,7 @@ def generate(model,inputs):
         num_octaves=args.num_octaves,
     )
     
-    return Image.fromarray(dreamed_image, 'RGB')
+    return (dreamed_image*255).astype(np.uint8)
 
 if __name__ == '__main__':
     runway.run(port=5232)
