@@ -5,4 +5,4 @@ spec:
   gpu: False
   cpu: True
 build_steps:
-  - pip install torch==1.1.0 runway-python numpy==1.16.4
+  - pip install torch==1.1.0 runway-python numpy==1.16.4 torchvision matplotlib pillow argparse tqdm scipy
