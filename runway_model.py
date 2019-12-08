@@ -69,8 +69,7 @@ if __name__ == "__main__":
 
     # Define the model
 
- @runway.setup(options={"checkpoint": runway.category(description="Pretrained checkpoints to use.",
-                                      choices=['celebAHQ-512', 'celebAHQ-256', 'celeba'],
+@runway.setup(options={"checkpoint": runway.category(description="Pretrained checkpoints to use.",                                      choices=['celebAHQ-512', 'celebAHQ-256', 'celeba'],
                                       default='celebAHQ-512')})
 def setup(opts):
     checkpoint = opts['checkpoint']
@@ -80,7 +79,7 @@ def setup(opts):
     return model
 
     # Extract deep dream image
- @runway.command('generate',
+@runway.command('generate',
                inputs={ 'image': runway.image },
                outputs={ 'image': runway.image })
 def generate(model,inputs)
