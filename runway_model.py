@@ -12,11 +12,12 @@ import tqdm
 import scipy.ndimage as nd
 from utils import deprocess, preprocess, clip
 
-
+device = torch.device("cpu")
 def dream(image, model, iterations, lr):
     """ Updates the image to maximize outputs for n iterations """
     Tensor = torch.FloatTensor
-    image = Variable(Tensor(image), requires_grad=True)
+    model = model.to(device)
+    image = Variable(Tensor(image).to(device), requires_grad=True)
     for i in range(iterations):
         model.zero_grad()
         out = model(image)
